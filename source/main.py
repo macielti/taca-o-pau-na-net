@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import utils
 import instabot
+from playsound import playsound
 
 # main frame
 root = tk.Tk()
@@ -71,6 +72,7 @@ def calculate():
     message_box_str = " - Velocidade de download entregue: %.2f Megas \n - Velocidade de download contratada: %.2f Megas \n - O provedor está entregando %.2f%% do que foi contratado. \n\n Deseja reclamar no instagram do Provedor? " % (down_shiped, float(down_contract), (100*down_shiped)/float(down_contract))
     answer = messagebox.askyesno("Resultados - <Provedor>", message_box_str)
     if answer: # if the user wish to do the post on the instagram
+        playsound('taca.mp3')
         do_reclamation(result)
 
 complain_button = tk.Button(root, text="Analisar e Reclamar", command=calculate)
