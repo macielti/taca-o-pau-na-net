@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import utils
+import instabot
 
 # main frame
 root = tk.Tk()
@@ -36,6 +37,28 @@ velocity_var = tk.StringVar()
 velocity_entry = tk.Entry(root, textvariable=velocity_var)
 velocity_entry.grid(row=5, column=1)
 
+# post the reclamation function
+def do_reclamation(result):
+    """Recieve the result dict object that represent the test results"""
+    global login_var
+    global passwd_var
+    global provider_login_var
+    global velocity_var
+
+    down_contract = velocity_var.get()
+    down_shiped = result['download']/1000000
+    
+    bot = instabot.Bot() # create the instance of the instagram bot
+    bot.login(username=login_var.get(), password=passwd_var.get()) # do login operation
+    media = bot.get_user_medias(provider_login_var.get(), filtration=False)[0] # get the most recent post from the provider perfil
+
+    reclamation_message = "[RECLAMAÇÃO] - Minha internet está muito lenta, vocês só estão me entregando %.2f Megas, que representa apenas %.2f%% da velocidade contratada que foi de %.2f Megas. Para mais detalhes sobre o teste de qualidade de conexão que realizei aqui em casa: %s" % (down_shiped, (100*down_shiped)/float(down_contract), float(down_contract), result['share'])
+    bot.comment(media, reclamation_message) # post the results on the instagram
+    messagebox.showinfo("Tudo OK...", "A sua reclamação foi postada com sucesso...")
+
+
+
+
 # button to make the reclamation
 def calculate():
     global velocity_var
@@ -48,8 +71,7 @@ def calculate():
     message_box_str = " - Velocidade de download entregue: %.2f Megas \n - Velocidade de download contratada: %.2f Megas \n - O provedor está entregando %.2f%% do que foi contratado. \n\n Deseja reclamar no instagram do Provedor? " % (down_shiped, float(down_contract), (100*down_shiped)/float(down_contract))
     answer = messagebox.askyesno("Resultados - <Provedor>", message_box_str)
     if answer: # if the user wish to do the post on the instagram
-        #TODO - call the reclamation procedure.
-        pass
+        do_reclamation(result)
 
 complain_button = tk.Button(root, text="Analisar e Reclamar", command=calculate)
 complain_button.grid(row=6, column=0, columnspan=2, ipadx=50, pady=20)
