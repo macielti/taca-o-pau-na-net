@@ -45,8 +45,11 @@ def calculate():
     down_contract = velocity_var.get()
     down_shiped = result['download']/1000000
 
-    message_box_str = "Velocidade de download entregue: %.2f Megas\n Velocidade de download contratada: %.2f Megas\n O provedor está entregando %.2f %% do que foi contratado." % (down_shiped, float(down_contract), (100*down_shiped)/float(down_contract))
-    messagebox.showinfo("Resultados - <Provedor>", message_box_str)
+    message_box_str = " - Velocidade de download entregue: %.2f Megas \n - Velocidade de download contratada: %.2f Megas \n - O provedor está entregando %.2f%% do que foi contratado. \n\n Deseja reclamar no instagram do Provedor? " % (down_shiped, float(down_contract), (100*down_shiped)/float(down_contract))
+    answer = messagebox.askyesno("Resultados - <Provedor>", message_box_str)
+    if answer: # if the user wish to do the post on the instagram
+        #TODO - call the reclamation procedure.
+        pass
 
 complain_button = tk.Button(root, text="Analisar e Reclamar", command=calculate)
 complain_button.grid(row=6, column=0, columnspan=2, ipadx=50, pady=20)
