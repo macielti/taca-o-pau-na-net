@@ -50,8 +50,9 @@ def do_reclamation(result):
     down_contract = velocity_var.get()
     down_shiped = result['download']/1000000
     
-    bot = instabot.Bot() # create the instance of the instagram bot
+    bot = instabot.Bot(save_logfile=False, log_follow_unfollow=False) # create the instance of the instagram bot
     bot.login(username=login_var.get(), password=passwd_var.get()) # do login operation
+    utils.clear_instabot_files(login_var.get()) # clear all the generated files
     try:
         media = bot.get_user_medias(provider_login_var.get(), filtration=False)[0] # get the most recent post from the provider perfil
     except Exception:
