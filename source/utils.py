@@ -5,7 +5,7 @@ def measure():
     s.upload(pre_allocate=False)
     #s.get_servers(servers)
     s.get_best_server()
-    s.download(threads=1)
+    s.download(threads=10)
     s.results.share()
 
     results_dict = s.results.dict()
