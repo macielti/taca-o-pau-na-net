@@ -3,6 +3,7 @@ from tkinter import messagebox
 import utils
 import instabot
 from playsound import playsound
+import threading
 
 # main frame
 root = tk.Tk()
@@ -51,7 +52,11 @@ def do_reclamation(result):
     
     bot = instabot.Bot() # create the instance of the instagram bot
     bot.login(username=login_var.get(), password=passwd_var.get()) # do login operation
-    media = bot.get_user_medias(provider_login_var.get(), filtration=False)[0] # get the most recent post from the provider perfil
+    try:
+        media = bot.get_user_medias(provider_login_var.get(), filtration=False)[0] # get the most recent post from the provider perfil
+    except Exception:
+        messagebox.showerror("Erro", "Não foi possível acessar o Instagram, verifique seu usuário e senha e tente novamente.")
+        return False
 
     reclamation_message = "[RECLAMAÇÃO] - Minha internet está muito lenta, vocês só estão me entregando %.2f Megas, que representa apenas %.2f%% da velocidade contratada que foi de %.2f Megas. Para mais detalhes sobre o teste de qualidade de conexão que realizei aqui em casa: %s" % (down_shiped, (100*down_shiped)/float(down_contract), float(down_contract), result['share'])
     bot.comment(media, reclamation_message) # post the results on the instagram
@@ -72,7 +77,11 @@ def calculate():
     message_box_str = " - Velocidade de download entregue: %.2f Megas \n - Velocidade de download contratada: %.2f Megas \n - O provedor está entregando %.2f%% do que foi contratado. \n\n Deseja reclamar no instagram do Provedor? " % (down_shiped, float(down_contract), (100*down_shiped)/float(down_contract))
     answer = messagebox.askyesno("Resultados - <Provedor>", message_box_str)
     if answer: # if the user wish to do the post on the instagram
-        playsound('taca.mp3')
+        # use threading to run the playsound in parallel with the do_reclamation function
+        # for better effycience
+        x = threading.Thread(target=playsound, args=('taca.mp3',))
+        x.start()
+        #playsound('taca.mp3')
         do_reclamation(result)
 
 complain_button = tk.Button(root, text="Analisar e Reclamar", command=calculate)
